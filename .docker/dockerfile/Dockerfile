@@ -9,6 +9,7 @@ FROM php:${PHPVERSION}-${BASE_IMAGE_VERSION}
 # Args
 ############
 ARG APK_CACHE=--no-cache
+ARG VERSION_ADMINEREVO=4.8.2
 
 #############
 # Set env var
@@ -30,6 +31,16 @@ RUN set -eux \
 
 ## Default dir for apps
 WORKDIR /var/www/html
+
+# Entrypoint -> scripts in /ep.d/*.sh
+RUN mkdir -p -m 755 /ep.d
+COPY .docker/config/fpm/ep.sh /ep.sh
+RUN chmod -R 755 /ep.sh /ep.d/
+## At the end, ep.sh does "exec $@" (CMD)
+ENTRYPOINT ["/ep.sh"]
+CMD ["/usr/local/bin/php", "--server 0.0.0.0:8000"]
+
+COPY .docker/config/scripts/*.sh /
 
 RUN set -eux; \
     apk update \
@@ -55,5 +66,3 @@ RUN cd adminerevo \
 EXPOSE 8000
 
 WORKDIR /var/www/html/adminerevo
-
-#ENTRYPOINT ["/usr/local/bin/php --server 0.0.0.0:8000"]

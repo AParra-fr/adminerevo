@@ -40,3 +40,15 @@ It would be sad spending time/energy on development of a feature which would not
 |`tests/katalon.html`|Katalon Automation Recorder test suite|
 
 If downloaded from Git then run: `git submodule update --init`
+
+### For docker
+
+Build image.
+```shell
+docker build -f .docker/dockerfile/Dockerfile -t adminerevo:latest .
+```
+
+Run.
+```shell
+docker container run -d adminerevo:latest --name adminerevo
+```
